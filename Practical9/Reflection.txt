@@ -1,0 +1,4 @@
+This practical was challenging.
+The spatial SIR part was the hardest. 
+I enjoyed seeing how vaccination changes the outbreak size
+The most important thing I learned is how to simulate stochastic processes using binomial distributions
