@@ -1,0 +1,5 @@
+What is the distribution of DALYs across all countries in 2019?
+Line number in dalys.py: 49
+To explore this question, I filtered the dataset to retain only records from the year 2019 and created a histogram to visualize the distribution of DALY values across all countries.
+The histogram shows that the majority of countries have DALY rates between 20,000 and 40,000 per 100,000 people. The distribution exhibits a clear right-skewed pattern, with a long tail extending toward higher values. This indicates that while most countries fall within a moderate range of disease burden, a small number of countries face extremely high levels of disease burden.
+This result aligns with my expectations. The variation in DALYs across countries is likely driven by multiple factors, including differences in healthcare system quality, economic development levels, access to preventive care, and environmental and lifestyle risks. The right-skewed distribution highlights the global disparity in public health outcomes.
