@@ -36,9 +36,9 @@ def daily_summary(items):
 
     # Warnings
     if total_cal > 2500:
-        print(f"⚠️ Warning: Calorie intake exceeds 2500 kcal (actual: {total_cal:.1f})")
+        print(f" Warning: Calorie intake exceeds 2500 kcal (actual: {total_cal:.1f})")
     if total_fat > 90:
-        print(f"⚠️ Warning: Fat intake exceeds 90 g (actual: {total_fat:.1f})")
+        print(f" Warning: Fat intake exceeds 90 g (actual: {total_fat:.1f})")
 
 
 # Example usage (runs only when this script is executed directly)

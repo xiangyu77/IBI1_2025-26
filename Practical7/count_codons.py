@@ -1,10 +1,10 @@
 # count_codons.py
-# 统计基因中指定终止密码子之前的框架内密码子使用频率，并生成饼图
+# Counts upstream in‑frame codons for the longest ORF defined by a user‑chosen stop codon
 
 import matplotlib.pyplot as plt
 
 def read_fasta(filename):
-    """读取 FASTA 文件，返回字典 {gene_name: sequence}"""
+    """Return dict {gene_name: sequence} from a FASTA file."""
     genes = {}
     with open(filename, 'r') as f:
         header = None
@@ -14,7 +14,7 @@ def read_fasta(filename):
             if line.startswith('>'):
                 if header:
                     genes[header] = ''.join(seq)
-                header = line[1:]  # 去掉 '>'
+                header = line[1:]   # remove '>'
                 seq = []
             else:
                 seq.append(line)
@@ -23,7 +23,7 @@ def read_fasta(filename):
     return genes
 
 def find_stop_positions(seq, stop):
-    """返回序列中所有 stop 密码子的起始索引列表"""
+    """Return list of all start indices of the stop codon in seq."""
     positions = []
     start = 0
     while True:
@@ -35,59 +35,57 @@ def find_stop_positions(seq, stop):
     return positions
 
 def count_codons_upstream(seq, stop_pos):
-    """从终止密码子之前（不包括终止）开始，以3为步长向前统计密码子"""
-    codon_counts = {}
-    # 从终止密码子的前一个密码子开始（即索引 stop_pos - 3）
+    """Count codons (3‑nt) upstream of stop_pos (excluding the stop)."""
+    counts = {}
     pos = stop_pos - 3
     while pos >= 0:
         codon = seq[pos:pos+3]
-        codon_counts[codon] = codon_counts.get(codon, 0) + 1
+        counts[codon] = counts.get(codon, 0) + 1
         pos -= 3
-    return codon_counts
+    return counts
 
-# 主程序
-stop = input("Enter stop codon (TAA, TAG, TGA): ").strip().upper()
-if stop not in ['TAA', 'TAG', 'TGA']:
-    print("Invalid stop codon. Exiting.")
-    exit()
+def main():
+    stop = input("Enter stop codon (TAA, TAG, TGA): ").strip().upper()
+    if stop not in ['TAA', 'TAG', 'TGA']:
+        print("Invalid stop codon.")
+        return
 
-# 读取 stop_genes.fa（由任务二生成）
-genes = read_fasta("stop_genes.fa")
+    try:
+        genes = read_fasta("stop_genes.fa")
+    except FileNotFoundError:
+        print("stop_genes.fa not found. Please run stop_codons.py first.")
+        return
 
-total_codon_counts = {}
+    total_counts = {}
+    gene_count = 0
 
-for gene_name, seq in genes.items():
-    # 检查该基因是否包含用户指定的终止密码子
-    if stop in seq:
-        # 找到所有出现位置
+    for name, seq in genes.items():
         positions = find_stop_positions(seq, stop)
-        if not positions:
-            continue
-        # 选择产生最长 ORF 的终止位置（这里取最大索引，即最靠后的）
-        best_pos = max(positions)
-        # 统计该位置之前的密码子
-        counts = count_codons_upstream(seq, best_pos)
-        # 合并到总计数
-        for codon, cnt in counts.items():
-            total_codon_counts[codon] = total_codon_counts.get(codon, 0) + cnt
+        if positions:
+            # Choose the last stop (gives longest ORF)
+            best = max(positions)
+            counts = count_codons_upstream(seq, best)
+            for codon, cnt in counts.items():
+                total_counts[codon] = total_counts.get(codon, 0) + cnt
+            gene_count += 1
 
-# 准备饼图数据
-if total_codon_counts:
-    # 如果密码子种类太多，可以按出现次数排序，取前20种显示
-    sorted_codons = sorted(total_codon_counts.items(), key=lambda x: x[1], reverse=True)
+    if not total_counts:
+        print(f"No genes containing stop codon {stop} found in stop_genes.fa")
+        return
+
+    # Prepare pie chart data
+    sorted_codons = sorted(total_counts.items(), key=lambda x: x[1], reverse=True)
     labels = [c[0] for c in sorted_codons]
     sizes = [c[1] for c in sorted_codons]
 
-    # 设置图形大小
     plt.figure(figsize=(10, 8))
     plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
-    plt.title(f'Codon usage upstream of {stop} in yeast genes')
-    plt.axis('equal')  # 保持圆形
-
-    # 保存图片
-    output_file = f'codon_usage_{stop}.png'
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    plt.title(f'Codon usage upstream of {stop} (based on {gene_count} genes)')
+    plt.axis('equal')
+    outfile = f'codon_usage_{stop}.png'
+    plt.savefig(outfile, dpi=300, bbox_inches='tight')
     plt.close()
-    print(f"Pie chart saved as {output_file}")
-else:
-    print(f"No genes with stop codon {stop} found.")
+    print(f"Pie chart saved as {outfile}")
+
+if __name__ == "__main__":
+    main()

@@ -1,43 +1,27 @@
-# 2004年苏格兰人口（百万）
-a = 5.08
-# 2014年苏格兰人口
-b = 5.33
-# 2024年苏格兰人口
-c = 5.55
+# Population change calculation
+a = 5.08  # Scotland population in 2004 (millions)
+b = 5.33  # 2014
+c = 5.55  # 2024
 
-# 计算2004-2014年的变化
-d = b - a
-# 计算2014-2024年的变化
-e = c - b
+d = b - a  # Change 2004–2014
+e = c - b  # Change 2014–2024
 
-# 比较两个变化量
+print("Population change 2004–2014:", d, "million")
+print("Population change 2014–2024:", e, "million")
+
 if d > e:
-    print("2004-2014年增长更快")
+    print("Population growth is decelerating.")
 elif d < e:
-    print("2014-2024年增长更快")
+    print("Population growth is accelerating.")
 else:
-    print("两个十年增长相同")
+    print("Population growth is stable.")
 
-# 判断人口增长是加速还是减速
-if e > d:
-    print("人口增长正在加速")
-else:
-    print("人口增长正在减速或保持不变")
-# 布尔变量练习
+# Boolean logic
 X = True
 Y = False
-
-W = X or Y   # W 等于 X 或 Y 的逻辑或结果
-
-# 打印不同组合下的W值
-print("X=True, Y=False -> W=", W)
-print("X=True, Y=True -> W=", (True or True))
-print("X=False, Y=True -> W=", (False or True))
-print("X=False, Y=False -> W=", (False or False))
-
-# 真理表注释
-# or 运算的真值表：
-# True or True = True
-# True or False = True
-# False or True = True
-# False or False = False
+W = X or Y
+print("\nTruth table for OR:")
+print("True or True =", True or True)
+print("True or False =", True or False)
+print("False or True =", False or True)
+print("False or False =", False or False)
